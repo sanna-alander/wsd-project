@@ -1,19 +1,23 @@
-import { Client } from "../deps.js";
+import { Pool } from "../deps.js";
 import { config } from "../config/config.js";
 
-const getClient = () => {
-  return new Client(config.database);
-}
+const CONCURRENT_CONNECTIONS = 5;
+const connectionPool = new Pool({ 
+    hostname: "hattie.db.elephantsql.com",
+    database: "krmepyxl",
+    user: "krmepyxl",
+    password: "A-QQp3TYcRhuQpbVIzruXCkVYWdVYEUP",
+    port: 5432
+ }, CONCURRENT_CONNECTIONS);
 
 const executeQuery = async(query, ...args) => {
-  const client = getClient();
+  const client = await connectionPool.connect();
   try {
-    await client.connect();
     return await client.query(query, ...args);
   } catch (e) {
     console.log(e);
   } finally {
-    await client.end();
+    client.release();
   }
 }
 

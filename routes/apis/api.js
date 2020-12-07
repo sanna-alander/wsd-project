@@ -11,9 +11,9 @@ const usersValidationRules = {
 	password: [required, minLength(4)]
 };
 
-const userErrors = {};
-
 const postLoginForm = async({request, response, session, render}) => {
+    const userErrors = {};
+
     const body = request.body();
     const params = await body.value;
   
@@ -53,23 +53,35 @@ const postRegistrationForm = async({request, response}) => {
     const body = request.body();
     const params = await body.value;
     
-    const email = params.get('email');
-    const password = params.get('password');
-    const verification = params.get('verification');
+    const data = {
+        email: params.get('email'),
+        password: params.get('password'),
+        verification: params.get('verification'), 
+        errors: {} 
+    };
   
-    if (password !== verification) {
-      userErrors.push('The entered passwords did not match');
+    if (data.password !== data.verification) {
+      data.errors.push('The entered passwords did not match');
     }
   
-    const existingUsers = service.usersByEmail(email);
+    const existingUsers = service.usersByEmail(data.email);
     if (existingUsers.rowCount > 0) {
-      response.body = 'The email is already reserved.';
-      return;
+      data.errors.push('The email is already reserved.');
+    }
+
+    const [passes, errors] = await validate(data, userValidationRules);
+    if (!passes) {
+        data.errors = data.errors.contact(errors);
     }
   
-    const hash = await bcrypt.hash(password);
-    service.addUser(email, hash);
-    response.body = 'Registration successful!';
+    if (data.errors.length > 0) {
+        render("register.ejs", data);
+    } else {
+        const hash = await bcrypt.hash(password);
+        service.addUser(email, hash);
+        response.body = 'Registration successful!';
+    }
+
 };
 
 
