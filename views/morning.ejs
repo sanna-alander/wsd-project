@@ -1,0 +1,23 @@
+<h1>Report morning:</h1>
+
+<div>
+    <label for="date">Choose date:</label><br>
+    <input type="date" id="date" name="date"
+       value="<%= today %>">
+    
+    <form>
+        <label for="sleep_duration">Sleep duration:</label><br>
+        <input type="number" id="sleep_duration" name="sleep_duration">
+    </form>
+    
+    <div class="slidecontainer">
+        <label for="sleep_quality">Sleep quality (1-5):</label><br>
+        <input type="range" min="1" max="5" value="1" class="slider" id="sleep_quality">
+    </div>
+
+    <div class="slidecontainer">
+        <label for="mood">Generic mood (1-5):</label><br>
+        <input type="range" min="1" max="5" value="1" class="slider" id="mood">
+    </div>
+    
+</div>
