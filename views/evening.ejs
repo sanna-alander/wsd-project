@@ -6,18 +6,15 @@
        value="<%= today %>">
     
     <form>
-        <label for="sleep_duration">Sleep duration:</label><br>
-        <input type="number" id="sleep_duration" name="sleep_duration">
+        <label for="study_time">Time spent studying:</label><br>
+        <input type="number" id="study_time" name="study_time"><br>
+        <label for="sport_time">Time spent exercising:</label><br>
+        <input type="number" id="sport_time" name="sport_time"><br>
     </form>
     
     <div class="slidecontainer">
-        <label for="sleep_quality">Sleep quality (1-5):</label><br>
-        <input type="range" min="1" max="5" value="1" class="slider" id="sleep_quality">
+        <label for="eating">Quality of eating(1-5):</label><br>
+        <input type="range" min="1" max="5" value="1" class="slider" id="eating">
     </div>
 
-    <div class="slidecontainer">
-        <label for="sleep_quality">Sleep quality (1-5):</label><br>
-        <input type="range" min="1" max="5" value="1" class="slider" id="sleep_quality">
-    </div>
-    
-</div>
+<%- include('./partials/footer.ejs') %>

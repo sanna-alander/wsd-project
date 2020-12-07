@@ -1,9 +1,9 @@
 const showLoginForm = ({render}) => {
-    render('login.ejs');
+    render('login.ejs', { errors: [] });
 }
 
 const showRegistrationForm = ({render}) => {
-    render('register.ejs');
+    render('register.ejs', { errors: [] });
   }
 
 const showLandingPage = ({render}) => {

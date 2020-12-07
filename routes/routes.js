@@ -12,9 +12,9 @@ router.get('/auth/login', showLoginForm);
 router.post('/auth/login', api.postLoginForm)
       .get('/behavior/reporting', showReporting)
       .get('/behavior/reporting/morning', showMorning)
-      .get('/behavior/reporting/evening', showEvening);
-      //.post('/behavior/reporting/morning', reportMorning)
-      //.post('/behavior/reporting/morning', reportEvening)
+      .get('/behavior/reporting/evening', showEvening)
+      .post('/behavior/reporting/morning', api.reportMorning)
+      .post('/behavior/reporting/evening', api.reportEvening);
       //.get('/behavior/summary', showSummary)
       //.post('/behavior/summary', );
 

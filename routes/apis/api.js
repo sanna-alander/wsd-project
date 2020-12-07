@@ -12,7 +12,7 @@ const usersValidationRules = {
 };
 
 const postLoginForm = async({request, response, session, render}) => {
-    const userErrors = {};
+    const userErrors = [];
 
     const body = request.body();
     const params = await body.value;
@@ -20,13 +20,11 @@ const postLoginForm = async({request, response, session, render}) => {
     const email = params.get('email');
     const password = params.get('password');
   
-    // check if the email exists in the database
     const res = service.usersByEmail(email);
     if (res.rowCount === 0) {
         userErrors.push("This email doesn't exist in the database.");
     }
   
-    // take the first row from the results
     const userObj = res.rowsOfObjects()[0];
   
     const hash = userObj.password;
@@ -49,7 +47,7 @@ const postLoginForm = async({request, response, session, render}) => {
     
 }
 
-const postRegistrationForm = async({request, response}) => {
+const postRegistrationForm = async({request, response, render}) => {
     const body = request.body();
     const params = await body.value;
     
@@ -57,7 +55,7 @@ const postRegistrationForm = async({request, response}) => {
         email: params.get('email'),
         password: params.get('password'),
         verification: params.get('verification'), 
-        errors: {} 
+        errors: [] 
     };
   
     if (data.password !== data.verification) {
@@ -84,7 +82,44 @@ const postRegistrationForm = async({request, response}) => {
 
 };
 
+const reportMorning = async({request, session}) => {
+    const body = request.body();
+    const params = await body.value;
+
+    const data = {
+        date: params.get('date'),
+        sleep_duration: params.get('sleep_duration'),
+        sleep_quality: params.get('sleep_quality'), 
+        mood: params.get('mood'),
+        user_id: session.get('id'),
+        errors: [] 
+    };
+
+    if (data.errors.length === 0) {
+        service.addMorning(data.date, data.sleep_duration, data.sleep_quality, data.mood, data.user_id);
+    }
+}
+
+const reportEvening = async({}) => {
+    const body = request.body();
+    const params = await body.value;
+
+    const data = {
+        date: params.get('date'),
+        study_time: params.get('study_time'),
+        sport_time: params.get('sport_time'),
+        eating: params.get('eating'),
+        mood: params.get('mood'),
+        user_id: session.get('id'),
+        errors: [] 
+    };
+
+    if (data.errors.length === 0) {
+        service.addMorning(data.date, data.study_time, data.sport_time, data.eating, data.mood, data.user_id);
+    }
+}
 
 
-export { postRegistrationForm, postLoginForm }
+
+export { postRegistrationForm, postLoginForm, reportMorning, reportEvening }
 export { session }
