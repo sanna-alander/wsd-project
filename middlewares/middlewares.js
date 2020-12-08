@@ -29,11 +29,11 @@ const serveStaticFilesMiddleware = async(context, next) => {
 }
 
 const limitAccessMiddleware = async(context, next) => {
-  if (context.request.url.pathname.startsWith('/behavior/reporting')) {
+  if (context.request.url.pathname.startsWith('/behavior')) { ///behavior/reporting
     if (await context.session.get('authenticated')) {
       await next();
     } else {
-      response.redirect('/auth/login');
+      context.response.redirect('/');
     }
   } else {
     await next();

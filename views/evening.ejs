@@ -1,20 +1,24 @@
 <h1>Report evening:</h1>
 
-<div>
+<form method="POST" action="/behavior/reporting/evening">
     <label for="date">Choose date:</label><br>
     <input type="date" id="date" name="date"
-       value="<%= today %>">
-    
-    <form>
-        <label for="study_time">Time spent studying:</label><br>
-        <input type="number" id="study_time" name="study_time"><br>
-        <label for="sport_time">Time spent exercising:</label><br>
-        <input type="number" id="sport_time" name="sport_time"><br>
-    </form>
+       value="<%= today %>"><br>
+
+    <label for="study_time">Time spent studying:</label><br>
+    <input type="number" id="study_time" name="study_time"><br>
+    <label for="sport_time">Time spent exercising:</label><br>
+    <input type="number" id="sport_time" name="sport_time"><br>
     
     <div class="slidecontainer">
         <label for="eating">Quality of eating(1-5):</label><br>
-        <input type="range" min="1" max="5" value="1" class="slider" id="eating">
+        <input type="range" min="1" max="5" value="1" class="slider" id="eating" name="eating">
     </div>
 
-<%- include('./partials/footer.ejs') %>
+    <div class="slidecontainer">
+        <label for="mood">Generic mood (1-5):</label><br>
+        <input type="range" min="1" max="5" value="1" class="slider" id="mood" name="mood">
+    </div>
+    <input type="submit" value="Report morning" />
+</from>
+<%- include('./partials/error.ejs') %>

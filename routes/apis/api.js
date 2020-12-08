@@ -6,10 +6,10 @@ import { validate, required, isEmail, minLength } from "https://deno.land/x/vali
 const session = new Session({ framework: "oak" });
 await session.init();
 
-const usersValidationRules = {
+/*const usersValidationRules = {
 	email: [required, isEmail],
 	password: [required, minLength(4)]
-};
+};*/
 
 const postLoginForm = async({request, response, session, render}) => {
     const userErrors = [];
@@ -20,18 +20,17 @@ const postLoginForm = async({request, response, session, render}) => {
     const email = params.get('email');
     const password = params.get('password');
   
-    const res = service.usersByEmail(email);
+    const res = await service.usersByEmail(email);
+    const userObj = res.rowsOfObjects()[0];
     if (res.rowCount === 0) {
         userErrors.push("This email doesn't exist in the database.");
-    }
-  
-    const userObj = res.rowsOfObjects()[0];
-  
-    const hash = userObj.password;
-  
-    const passwordCorrect = await bcrypt.compare(password, hash);
-    if (!passwordCorrect) {
-        userErrors.push("Incorrect password.");
+    } else {
+        const hash = userObj.password;
+      
+        const passwordCorrect = await bcrypt.compare(password, hash);
+        if (!passwordCorrect) {
+            userErrors.push("Incorrect password.");
+        } 
     }
 
     if (userErrors.length > 0) {
@@ -42,7 +41,8 @@ const postLoginForm = async({request, response, session, render}) => {
             id: userObj.id,
             email: userObj.email
         });
-        response.body = 'Authentication successful!';  
+        //response.body = 'Authentication successful!'; 
+        response.redirect('/'); 
     }
     
 }
@@ -62,14 +62,22 @@ const postRegistrationForm = async({request, response, render}) => {
       data.errors.push('The entered passwords did not match');
     }
   
-    const existingUsers = service.usersByEmail(data.email);
+    const existingUsers = await service.usersByEmail(data.email);
     if (existingUsers.rowCount > 0) {
       data.errors.push('The email is already reserved.');
     }
 
-    const [passes, errors] = await validate(data, userValidationRules);
+    /*const [passes, errors] = await validate(data, usersValidationRules);
     if (!passes) {
         data.errors = data.errors.contact(errors);
+    }*/
+
+    if (!data.email || !data.email.includes('@')) {
+        errors.push("Email is not a valid email address");
+    }
+
+    if (!data.password || data.password.length < 4) {
+        data.errors.push("Password length should be at least 4 characters.");
     }
   
     if (data.errors.length > 0) {
@@ -82,25 +90,28 @@ const postRegistrationForm = async({request, response, render}) => {
 
 };
 
-const reportMorning = async({request, session}) => {
+const reportMorning = async({request, response, session, render}) => {
     const body = request.body();
     const params = await body.value;
 
     const data = {
         date: params.get('date'),
-        sleep_duration: params.get('sleep_duration'),
-        sleep_quality: params.get('sleep_quality'), 
-        mood: params.get('mood'),
-        user_id: session.get('id'),
+        sleep_duration: Number(params.get('sleep_duration')),
+        sleep_quality: Number(params.get('sleep_quality')), 
+        mood: Number(params.get('mood')),
+        user_id: await session.get('user').id,
         errors: [] 
     };
 
     if (data.errors.length === 0) {
-        service.addMorning(data.date, data.sleep_duration, data.sleep_quality, data.mood, data.user_id);
+        await service.addMorning(data.date, data.sleep_duration, data.sleep_quality, data.mood, data.user_id);
+        response.redirect('/behavior/reporting');
+    } else {
+        render('morning.ejs', { errors: data.errors });
     }
 }
 
-const reportEvening = async({}) => {
+const reportEvening = async({request, response, session, render}) => {
     const body = request.body();
     const params = await body.value;
 
@@ -110,16 +121,23 @@ const reportEvening = async({}) => {
         sport_time: params.get('sport_time'),
         eating: params.get('eating'),
         mood: params.get('mood'),
-        user_id: session.get('id'),
+        user_id: await session.get('user').id,
         errors: [] 
     };
 
     if (data.errors.length === 0) {
-        service.addMorning(data.date, data.study_time, data.sport_time, data.eating, data.mood, data.user_id);
+        await service.addMorning(data.date, data.study_time, data.sport_time, data.eating, data.mood, data.user_id);
+        response.redirect('/behavior/reporting');
+    } else {
+        render('evening.ejs', { errors: data.errors });
     }
 }
 
+const logout = async({response, session}) => {
+    await session.set('authenticated', null);
+    await session.set('user', null);
+    response.redirect('/');
+}
 
-
-export { postRegistrationForm, postLoginForm, reportMorning, reportEvening }
+export { postRegistrationForm, postLoginForm, reportMorning, reportEvening, logout }
 export { session }
