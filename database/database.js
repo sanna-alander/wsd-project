@@ -3,11 +3,11 @@ import { config } from "../config/config.js";
 
 const CONCURRENT_CONNECTIONS = 5;
 const connectionPool = new Pool({ 
-    hostname: "hattie.db.elephantsql.com",
-    database: "krmepyxl",
-    user: "krmepyxl",
-    password: "A-QQp3TYcRhuQpbVIzruXCkVYWdVYEUP",
-    port: 5432
+    hostname: config.hostname,
+    database: config.database,
+    user: config.user,
+    password: config.password,
+    port: config.port
  }, CONCURRENT_CONNECTIONS);
 
 const executeQuery = async(query, ...args) => {

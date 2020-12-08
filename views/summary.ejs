@@ -1,27 +1,31 @@
+<%- include('./partials/header.ejs') %>
 <%- include('./partials/logout.ejs') %>
+<div class="container">
+    <h2>Weekly summary (by default last week):</h2>
+    <div>
+        <p>Average sleep duration: <%= sleep_duration %> </p><br>
+        <p>Average sleep quality: <%= sleep_quality %> </p><br>
+        <p>Average sport time: <%= sport_time %> </p><br>
+        <p>Average study time: <%= study_time %> </p><br>
+        <p>Average general mood: <%= mood %></p><br>
+    </div>
 
-<h2>Weekly summary (by default last week):</h2>
-<div>
-    <p>Average sleep duration: <%= sleep_duration %> </p><br>
-    <p>Average sleep duration: </p><br>
-    <p>Average sleep duration: </p><br>
-    <p>Average sleep duration: </p><br>
-    <p>Average general mood: <%= mood %></p><br>
+    <h2>Monthly summary (by default last month):</h2>
+    <div>
+        <p>Average sleep duration: <%= sleep_duration_m %> </p><br>
+        <p>Average sleep quality: <%= sleep_quality_m %> </p><br>
+        <p>Average sport time: <%= sport_time_m %> </p><br>
+        <p>Average study time: <%= study_time_m %> </p><br>
+        <p>Average general mood: <%= mood_m %></p><br>
+    </div>
+
+    <form method="POST" action="/behavior/summary">     
+        <label for="week">Select week:</label><br>
+        <input type="week" id="week" name="week"><br>
+        <label for="month">Select month:</label><br>
+        <input type="month" id="month" name="month"><br>
+        <input type="submit" value="Show summaries">
+    </form>
+
 </div>
-
-<h2>Monthly summary (by default last month):</h2>
-<div>
-    <p>Average sleep duration: <%= sleep_duration %> </p><br>
-    <p>Average sleep duration: </p><br>
-    <p>Average sleep duration: </p><br>
-    <p>Average sleep duration: </p><br>
-    <p>Average general mood: <%= mood %></p><br>
-</div>
-
-<form method="POST" action="/behavior/summary">
-    <label for="week">Select week:</label><br>
-    <input type="week" id="week" name="week"><br>
-    <label for="month">Select month:</label><br>
-    <input type="month" id="month" name="month"><br>
-    <input type="submit" value="Show summaries">
-</form>
+<%- include('./partials/footer.ejs') %>

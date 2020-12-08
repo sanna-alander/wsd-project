@@ -16,8 +16,8 @@ router.post('/auth/login', api.postLoginForm)
       .get('/behavior/reporting/evening', showEvening)
       .post('/behavior/reporting/morning', api.reportMorning)
       .post('/behavior/reporting/evening', api.reportEvening)
-      .get('/behavior/summary', showSummary);
-      //.post('/behavior/summary', api.postSummary);
+      .get('/behavior/summary', showSummary)
+      .post('/behavior/summary', api.summary);
       //.get('/api/summary', )
       //.get('/api/summary/:year/:month/:day')
 

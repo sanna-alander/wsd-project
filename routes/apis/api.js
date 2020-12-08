@@ -121,7 +121,7 @@ const reportEvening = async({request, response, session, render}) => {
         errors: [] 
     };
 
-    if (isNan(data.study_time) || Number(data.study_time) < 0) {
+    if (isNaN(data.study_time) || Number(data.study_time) < 0) {
         data.errors.push("Enter a valid number for study time!")
     }
 
@@ -136,7 +136,7 @@ const reportEvening = async({request, response, session, render}) => {
         await service.updateEvening(data.date, Number(data.study_time), Number(data.sport_time), data.eating, data.mood, user_id);
         response.redirect('/behavior/reporting');
     } else if (data.errors.length === 0) {
-        await service.addMorning(data.date, Number(data.study_time), Number(data.sport_time), data.eating, data.mood, user_id);
+        await service.addEvening(data.date, Number(data.study_time), Number(data.sport_time), data.eating, data.mood, user_id);
         response.redirect('/behavior/reporting');
     } else {
         render('evening.ejs', data);
@@ -149,7 +149,49 @@ const logout = async({response, session}) => {
     response.redirect('/');
 }
 
-//const postSummary
+const summary = async({request, session, render}) => {
+    const data = {
+        sleep_duration: "",
+        sport_time: "",
+        study_time: "",
+        sleep_quality: "",
+        mood: "",
+        sleep_duration_m: "",
+        sport_time_m: "",
+        study_time_m: "",
+        sleep_quality_m: "",
+        mood_m: ""
+    };
+    const body = request.body();
+    const params = await body.value;
+
+    const user_id = (await session.get('user')).id;
+
+    const week = Number(params.get('week').substr(6,7));
+    console.log(week);
+    const month = Number(params.get('month').substr(6,7));
+    console.log(month);
+    const weekSummary = await service.getWeekSummary(week, user_id);
+    const monthSummary = await service.getMonthSummary(month, user_id);
+
+    if (monthSummary != 0) {
+        data.sleep_duration_m = monthSummary.sleep_duration;
+        data.sleep_quality_m = monthSummary.sleep_quality;
+        data.sport_time_m = monthSummary.sport_time;
+        data.study_time_m = monthSummary.study_time;
+        data.mood_m = monthSummary.mood;
+    }
+    if (weekSummary != 0) {
+        data.sleep_duration = weekSummary.sleep_duration;
+        data.sleep_quality = weekSummary.sleep_quality;
+        data.sport_time = weekSummary.sport_time;
+        data.study_time = weekSummary.study_time;
+        data.mood = weekSummary.mood;
+    }
+
+    render("summary.ejs", data);
+
+}
 
 const avgMood = async({session}) => {
     const data = {
@@ -158,12 +200,20 @@ const avgMood = async({session}) => {
     };
 
     if (await session.get('authenticated')) {
-        data.moodToday = 5;
-        data.moodYesterday = 4;
+        const user_id = (await session.get('user')).id;
+        const today = new Date().toISOString().substr(0, 10);
+        let yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const moodToday = await service.avgMood(today, user_id);
+        const moodYesterday = await service.avgMood(yesterday, user_id);
+        if (!isNaN(moodToday) && !isNaN(moodYesterday)) {
+            data.moodToday = moodToday;
+            data.moodYesterday = moodYesterday;
+        }
     }
 
     return data;
 }
 
-export { postRegistrationForm, postLoginForm, reportMorning, reportEvening, logout, avgMood }
+export { postRegistrationForm, postLoginForm, reportMorning, reportEvening, logout, avgMood, summary }
 export { session }

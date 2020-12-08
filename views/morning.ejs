@@ -1,26 +1,29 @@
+<%- include('./partials/header.ejs') %>
 <%- include('./partials/logout.ejs') %>
-<h1>Report morning:</h1>
-
-<form method="POST" action="/behavior/reporting/morning">
-    <label for="date">Choose date:</label><br>
-    <input type="date" id="date" name="date"
-       value="<%= date %>"><br>
+<div class="container">
+    <h1>Report morning:</h1>
+    <form method="POST" action="/behavior/reporting/morning">
+        <label for="date">Choose date:</label><br>
+        <input type="date" id="date" name="date"
+           value="<%= date %>"><br>
+        
+       
+        <label for="sleep_duration">Sleep duration:</label><br>
+        <input type="text" id="sleep_duration" name="sleep_duration" value='<%= sleep_duration %>'>
+       
+        
+        <div class="slidecontainer">
+            <label for="sleep_quality">Sleep quality (1-5, 1 meaning very poor and 5 meaning excellent):</label><br>
+            <input type="range" min="1" max="5" value="<%= sleep_quality %>" class="slider" id="sleep_quality" name="sleep_quality">
+        </div>
     
-   
-    <label for="sleep_duration">Sleep duration:</label><br>
-    <input type="text" id="sleep_duration" name="sleep_duration" value='<%= sleep_duration %>'>
-   
-    
-    <div class="slidecontainer">
-        <label for="sleep_quality">Sleep quality (1-5, 1 meaning very poor and 5 meaning excellent):</label><br>
-        <input type="range" min="1" max="5" value="<%= sleep_quality %>" class="slider" id="sleep_quality" name="sleep_quality">
-    </div>
-
-    <div class="slidecontainer">
-        <label for="mood">Generic mood (1-5, 1 meaning very poor and 5 meaning excellent):</label><br>
-        <input type="range" min="1" max="5" value="<%= mood %>" class="slider" id="mood" name="mood">
-    </div>
-    <input type="submit" value="Report morning" />  
-</form>
+        <div class="slidecontainer">
+            <label for="mood">Generic mood (1-5, 1 meaning very poor and 5 meaning excellent):</label><br>
+            <input type="range" min="1" max="5" value="<%= mood %>" class="slider" id="mood" name="mood">
+        </div>
+        <input type="submit" value="Report morning" />  
+    </form>
+</div>
 <%- include('./partials/error.ejs') %>
 <a href="/behavior/reporting">Back to reporting</a><br>
+<%- include('./partials/footer.ejs') %>

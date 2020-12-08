@@ -1,6 +1,6 @@
-import { getSummary } from "../../services/service.js";
+//import { getSummary } from "../../services/service.js";
 import  *  as api from "../apis/api.js";
-import { session } from "../apis/api.js";
+//import { session } from "../apis/api.js";
 
 const data = {
     errors: [],
@@ -12,6 +12,19 @@ const data = {
     mood: "1",
     eating: "1",
     date: new Date().toISOString().substr(0, 10)
+};
+
+const summary_data = {
+    sleep_duration: "",
+    sport_time: "",
+    study_time: "",
+    sleep_quality: "",
+    mood: "",
+    sleep_duration_m: "",
+    sport_time_m: "",
+    study_time_m: "",
+    sleep_quality_m: "",
+    mood_m: ""
 };
 
 const showLoginForm = ({render}) => {
@@ -39,7 +52,7 @@ const showEvening = ({render}) => {
 }
 
 const showSummary = async({render}) => {
-    render('summary.ejs', await getSummary(data.date));
+    render('summary.ejs', summary_data);
 }
 
 

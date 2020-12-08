@@ -1,11 +1,14 @@
-<h1>Login:</h1>
-<form method="POST" action="/auth/login">
-    <label for="email">Email:</label>
-    <input type="email" name="email"/>
-    <label for="pw">Password:</label>
-    <input type="password" name="password" />
-    <input type="submit" value="Login" />
-</form>
+<%- include('./partials/header.ejs') %>
+<div class="container">
+    <h1>Login:</h1>
+    <form method="POST" action="/auth/login">
+        <label for="email">Email:</label>
+        <input type="email" name="email"/>
+        <label for="pw">Password:</label>
+        <input type="password" name="password" />
+        <input type="submit" value="Login" />
+    </form>
+</div>
 <%- include('./partials/error.ejs') %>
 <p>Don't have an account yet? Register <a href="/auth/register">here!</a></p>
-
+<%- include('./partials/footer.ejs') %>

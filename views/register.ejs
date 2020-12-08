@@ -1,12 +1,16 @@
-<h1>Register:</h1>
-<form method="POST" action="/auth/register">
-    <label for="email">Email:</label>
-    <input type="email" name="email" value='<%= email %>' />
-    <label for="pw">Password:</label>
-    <input type="password" name="password" />
-    <label for="verification">Password again:</label>
-    <input type="password" name="verification" />
-    <input type="submit" value="Register!" />
-</form>
+<%- include('./partials/header.ejs') %>
+<div class="container">
+    <h1>Register:</h1>
+    <form method="POST" action="/auth/register">
+        <label for="email">Email:</label>
+        <input type="email" name="email" value='<%= email %>' />
+        <label for="pw">Password:</label>
+        <input type="password" name="password" />
+        <label for="verification">Password again:</label>
+        <input type="password" name="verification" />
+        <input type="submit" value="Register!" />
+    </form>
+</div>
 <%- include('./partials/error') %>
 <p>Already have an account? Login <a href="/auth/login">here!</a></p>
+<%- include('./partials/footer.ejs') %>
