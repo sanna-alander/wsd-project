@@ -1,8 +1,22 @@
-<%- include('./partials/header.ejs') %>
+
 <h1>Welcome to health reporting app!</h1>
 <p>With this app you can report and trak things like sleeping, eating and exercise.</p>
 
 <a href="/auth/login">Click here to login!</a><br>
 <a href="/auth/register">Click here to register!</a><br>
 <a href="/behavior/reporting">Click here to report! (Only possible if you're logged in)</a><br>
-<a href="/behavior/summary">Click here to see summary (Only available if you're logged in)!</a><br>
+<a href="/behavior/summary">Click here to see summary. (Only available if you're logged in)</a><br>
+
+<div>
+    <h4>When logged in your average moods for today and yesterday can be seen here: (if nothing is shown that means you're not logged in)</h4>
+    <p>Average mood today: <%= moodToday %></p>
+    <p>Average mood yesterday: <%= moodYesterday %> </p> 
+    
+    <% if (!isNaN(moodToday) && !isNaN(moodYesterday)) { %>
+        <% if (moodToday >= moodYesterday) { %>
+            <p>Things are looking bright today!</p>
+        <% } else if (moodYesterday > moodToday) { %>
+            <p>Things are looking gloomy today...</p>
+        <% } %>
+    <% } %>
+</div>

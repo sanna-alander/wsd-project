@@ -1,11 +1,27 @@
 <%- include('./partials/logout.ejs') %>
 
-<h1>Here's a summary for last week:</h1>
+<h2>Weekly summary (by default last week):</h2>
 <div>
-    <p>Avarage </p>
+    <p>Average sleep duration: <%= sleep_duration %> </p><br>
+    <p>Average sleep duration: </p><br>
+    <p>Average sleep duration: </p><br>
+    <p>Average sleep duration: </p><br>
+    <p>Average general mood: <%= mood %></p><br>
 </div>
 
-<h1>Here's a summary for last month:</h1>
+<h2>Monthly summary (by default last month):</h2>
 <div>
-    <p>Avarage </p>
+    <p>Average sleep duration: <%= sleep_duration %> </p><br>
+    <p>Average sleep duration: </p><br>
+    <p>Average sleep duration: </p><br>
+    <p>Average sleep duration: </p><br>
+    <p>Average general mood: <%= mood %></p><br>
 </div>
+
+<form method="POST" action="/behavior/summary">
+    <label for="week">Select week:</label><br>
+    <input type="week" id="week" name="week"><br>
+    <label for="month">Select month:</label><br>
+    <input type="month" id="month" name="month"><br>
+    <input type="submit" value="Show summaries">
+</form>

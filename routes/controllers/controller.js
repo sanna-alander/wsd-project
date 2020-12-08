@@ -1,7 +1,17 @@
+import { getSummary } from "../../services/service.js";
+import  *  as api from "../apis/api.js";
+import { session } from "../apis/api.js";
+
 const data = {
     errors: [],
     email: "",
-    today: new Date().toISOString().substr(0, 10)
+    sleep_duration: "",
+    study_time: "",
+    sport_time: "",
+    sleep_quality: "1",
+    mood: "1",
+    eating: "1",
+    date: new Date().toISOString().substr(0, 10)
 };
 
 const showLoginForm = ({render}) => {
@@ -12,8 +22,8 @@ const showRegistrationForm = ({render}) => {
     render('register.ejs', data);
   }
 
-const showLandingPage = ({render, session}) => {
-    render('landingPage.ejs', data);
+const showLandingPage = async({render, session}) => {
+    render('landingPage.ejs', await api.avgMood({session}));
 }
 
 const showReporting = ({render}) => {
@@ -28,8 +38,8 @@ const showEvening = ({render}) => {
     render('evening.ejs', data);
 }
 
-const showSummary = ({render}) => {
-    render('summary.ejs');
+const showSummary = async({render}) => {
+    render('summary.ejs', await getSummary(data.date));
 }
 
 

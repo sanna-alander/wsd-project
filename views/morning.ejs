@@ -1,25 +1,26 @@
+<%- include('./partials/logout.ejs') %>
 <h1>Report morning:</h1>
 
 <form method="POST" action="/behavior/reporting/morning">
     <label for="date">Choose date:</label><br>
     <input type="date" id="date" name="date"
-       value="<%= today %>"><br>
+       value="<%= date %>"><br>
     
    
     <label for="sleep_duration">Sleep duration:</label><br>
-    <input type="number" id="sleep_duration" name="sleep_duration">
+    <input type="text" id="sleep_duration" name="sleep_duration" value='<%= sleep_duration %>'>
    
     
     <div class="slidecontainer">
-        <label for="sleep_quality">Sleep quality (1-5):</label><br>
-        <input type="range" min="1" max="5" value="1" class="slider" id="sleep_quality" name="sleep_quality">
+        <label for="sleep_quality">Sleep quality (1-5, 1 meaning very poor and 5 meaning excellent):</label><br>
+        <input type="range" min="1" max="5" value="<%= sleep_quality %>" class="slider" id="sleep_quality" name="sleep_quality">
     </div>
 
     <div class="slidecontainer">
-        <label for="mood">Generic mood (1-5):</label><br>
-        <input type="range" min="1" max="5" value="1" class="slider" id="mood" name="mood">
+        <label for="mood">Generic mood (1-5, 1 meaning very poor and 5 meaning excellent):</label><br>
+        <input type="range" min="1" max="5" value="<%= mood %>" class="slider" id="mood" name="mood">
     </div>
-    <input type="submit" value="Report morning" />
-    
+    <input type="submit" value="Report morning" />  
 </form>
 <%- include('./partials/error.ejs') %>
+<a href="/behavior/reporting">Back to reporting</a><br>

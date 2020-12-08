@@ -8,11 +8,17 @@ const errorMiddleware = async(context, next) => {
   }
 }
 
-const requestTimingMiddleware = async({ request }, next) => {
+const requestTimingMiddleware = async({ request, session }, next) => {
   const start = Date.now();
   await next();
   const ms = Date.now() - start;
   console.log(`${request.method} ${request.url.pathname} - ${ms} ms`);
+  if (await session.get('authenticated')) {
+    const user_id = (await session.get('user')).id;
+    console.log(`User id: ${user_id}`)
+  } else {
+    console.log('anonymous');
+  }
 }
 
 const serveStaticFilesMiddleware = async(context, next) => {
@@ -29,11 +35,11 @@ const serveStaticFilesMiddleware = async(context, next) => {
 }
 
 const limitAccessMiddleware = async(context, next) => {
-  if (context.request.url.pathname.startsWith('/behavior')) { ///behavior/reporting
+  if (context.request.url.pathname.startsWith('/behavior')) { 
     if (await context.session.get('authenticated')) {
       await next();
     } else {
-      context.response.redirect('/');
+      context.response.redirect('/auth/login');
     }
   } else {
     await next();

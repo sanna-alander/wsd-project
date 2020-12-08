@@ -1,24 +1,26 @@
+<%- include('./partials/logout.ejs') %>
 <h1>Report evening:</h1>
 
 <form method="POST" action="/behavior/reporting/evening">
     <label for="date">Choose date:</label><br>
     <input type="date" id="date" name="date"
-       value="<%= today %>"><br>
+       value="<%= date %>"><br>
 
     <label for="study_time">Time spent studying:</label><br>
-    <input type="number" id="study_time" name="study_time"><br>
+    <input type="text" id="study_time" name="study_time" value='<%= study_time %>'><br>
     <label for="sport_time">Time spent exercising:</label><br>
-    <input type="number" id="sport_time" name="sport_time"><br>
+    <input type="text" id="sport_time" name="sport_time" value='<%= sport_time %>'><br>
     
     <div class="slidecontainer">
-        <label for="eating">Quality of eating(1-5):</label><br>
-        <input type="range" min="1" max="5" value="1" class="slider" id="eating" name="eating">
+        <label for="eating">Quality of eating(1-5, 1 meaning very poor and 5 meaning excellent):</label><br>
+        <input type="range" min="1" max="5" value="<%= eating %>" class="slider" id="eating" name="eating">
     </div>
 
     <div class="slidecontainer">
-        <label for="mood">Generic mood (1-5):</label><br>
-        <input type="range" min="1" max="5" value="1" class="slider" id="mood" name="mood">
+        <label for="mood">Generic mood (1-5, 1 meaning very poor and 5 meaning excellent):</label><br>
+        <input type="range" min="1" max="5" value="<%= mood %>" class="slider" id="mood" name="mood">
     </div>
-    <input type="submit" value="Report morning" />
+    <input type="submit" value="Report evening" />
 </from>
 <%- include('./partials/error.ejs') %>
+<a href="/behavior/reporting">Back to reporting</a><br>
