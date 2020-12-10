@@ -22,8 +22,14 @@ app.use(middleware.limitAccessMiddleware);
 
 app.use(router.routes());
 
+let port = 7777;
+if (Deno.args.length > 0) {
+  const lastArgument = Deno.args[Deno.args.length - 1];
+  port = Number(lastArgument);
+}
+
 if (!Deno.env.get('TEST_ENVIRONMENT')) {
-  app.listen({ port: 7777 });
+  app.listen({ port: port });
 }
 
 //export default app;

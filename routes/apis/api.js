@@ -14,7 +14,7 @@ const postLoginForm = async({request, response, session, render}) => {
     const email = params.get('email');
     const password = params.get('password');
   
-    const res = await service.usersByEmail(email);
+    const res = await service.usersByEmail(email, "users");
     const userObj = res.rowsOfObjects()[0];
     if (res.rowCount === 0) {
         userErrors.push("Invalid email or password");
@@ -55,7 +55,7 @@ const postRegistrationForm = async({request, response, render}) => {
       data.errors.push('The entered passwords did not match.');
     }
   
-    const existingUsers = await service.usersByEmail(data.email);
+    const existingUsers = await service.usersByEmail(data.email, "users");
     if (existingUsers.rowCount > 0) {
       data.errors.push('This email is already reserved.');
     }
@@ -72,7 +72,7 @@ const postRegistrationForm = async({request, response, render}) => {
         render("register.ejs", data);
     } else {
         const hash = await bcrypt.hash(password);
-        service.addUser(email, hash);
+        service.addUser(email, hash, "users");
         response.redirect('/');
     }
 
@@ -176,10 +176,9 @@ const latestSummary = async({session, render}) => {
         week = 52;
         year = Number(year) - 1;
     } 
-    console.log(week);
     const month = Number(today.substr(5,2)) - 1;
-    const weekSummary = await service.getWeekSummary(week, year, user_id);
-    const monthSummary = await service.getMonthSummary(month, year, user_id);
+    const weekSummary = await service.getWeekSummary(week, year, user_id, "morning", "evening");
+    const monthSummary = await service.getMonthSummary(month, year, user_id, "morning", "evening");
 
     data.sleep_duration_m = monthSummary.sleep_duration;
     data.sleep_quality_m = monthSummary.sleep_quality;
@@ -221,14 +220,12 @@ const summary = async({request, session, render}) => {
     
     const week = Number(params.get('week').substr(6,2));
     const month = Number(params.get('month').substr(5,2));
-    console.log(week);
-    console.log(month);
     let year_w = 2020;
     let year_m = 2020;
     if (week != 0) year_w = params.get('week').substr(0,4);
     if (month != 0) year_m = params.get('month').substr(0,4);
-    const weekSummary = await service.getWeekSummary(week, year_w, user_id);
-    const monthSummary = await service.getMonthSummary(month, year_m, user_id);
+    const weekSummary = await service.getWeekSummary(week, year_w, user_id, "morning", "evening");
+    const monthSummary = await service.getMonthSummary(month, year_m, user_id, "morning", "evening");
 
     data.sleep_duration_m = monthSummary.sleep_duration;
     data.sleep_quality_m = monthSummary.sleep_quality;
@@ -253,7 +250,6 @@ const summary = async({request, session, render}) => {
     }
 
     render("summary.ejs", data);
-
 }
 
 const avgMood = async({session}) => {
@@ -268,16 +264,16 @@ const avgMood = async({session}) => {
     yesterday.setDate(yesterday.getDate() - 1);
     yesterday = yesterday.toISOString().substr(0, 10);
 
-    const todayMorningMood = await service.avgMorningMood(today);
-    const todayEveningMood = await service.avgEveningMood(today);
+    const todayMorningMood = await service.avgMorningMood(today, "morning");
+    const todayEveningMood = await service.avgEveningMood(today, "evening");
     if (todayMorningMood.rowCount !== 0 && todayEveningMood.rowCount !== 0) {
         const morningObjT = todayMorningMood.rowsOfObjects()[0];
         const eveningObjT = todayEveningMood.rowsOfObjects()[0];
         const avgMoodToday = (Number(morningObjT.morningmood) + Number(eveningObjT.eveningmood))/2;
         if(avgMoodToday != 0) data.moodToday = avgMoodToday;
     }
-    const yesMorningMood = await service.avgMorningMood(yesterday);
-    const yesEveningMood = await service.avgEveningMood(yesterday);
+    const yesMorningMood = await service.avgMorningMood(yesterday, "morning");
+    const yesEveningMood = await service.avgEveningMood(yesterday, "evening");
     if (todayMorningMood.rowCount !== 0 && todayEveningMood.rowCount !== 0) {
         const morningObjY = yesMorningMood.rowsOfObjects()[0];
         const eveningObjY = yesEveningMood.rowsOfObjects()[0];

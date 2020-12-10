@@ -1,8 +1,24 @@
 HELLO!
 
-My health app 
+First here you have the tables that are needed both for running the app and running the tests.
+Below these you can find more guidelines on running the app and tests locally.
+Also the address at which the application can currently be accessed can be found there.
 
-Tables that need to be created:
+The app can be used to report daily activity. All the links for reporting etc. can be found on the main page of the app.
+When reporting activity the user can choose to report morning or evening. It also shows on the page if reporting has already
+been done for morning and/or evening. The reported data is validated. Previously reported data can be updated by reporting the
+data again for the same day. 
+
+When a user is logged in they can also view their summary. The app automaticly first shows the summaries for last week and last month.
+The user can also choose the week and/or month for which they want to see the summary. If not enough data is found, a message is
+shown to the user.
+
+When logged in a log out link and the user email is shown in the corner for all other pages but login and register page.
+
+Basically the app works mostly like how the project assignment intructions instructed.
+
+
+Tables that need to be created when running the app locally:
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -17,7 +33,7 @@ CREATE TABLE morning (
     date DATE NOT NULL,
     sleep_duration FLOAT NOT NULL,
     sleep_quality INT NOT NULL,
-    mood INT NOT NULL
+    mood INT NOT NULL,
     user_id INTEGER REFERENCES users(id)
 );
 
@@ -31,16 +47,48 @@ CREATE TABLE evening (
 	user_id INTEGER REFERENCES users(id)
 );
 
+And tables needed for testing:
+
+CREATE TABLE users_test (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(320) NOT NULL,
+    password CHAR(60) NOT NULL
+);
+
+CREATE UNIQUE INDEX ON users_test((lower(email)));
+
+CREATE TABLE morning_test (
+    id SERIAL PRIMARY KEY,
+    date DATE NOT NULL,
+    sleep_duration FLOAT NOT NULL,
+    sleep_quality INT NOT NULL,
+    mood INT NOT NULL,
+    user_id INTEGER REFERENCES users(id)
+);
+
+CREATE TABLE evening_test (
+	id SERIAL PRIMARY KEY,
+	date DATE NOT NULL,
+	sport_time FLOAT NOT NULL,
+	study_time FLOAT NOT NULL,
+	eating INT NOT NULL,
+	mood INT NOT NULL,
+	user_id INTEGER REFERENCES users(id)
+);
+
+
 Address where the app can be found:
 
 How to run app locally:
 First start by creating the needed tables into your database.
-Add database credentials.
+Give database credentials when running the app.
 Then run by using deno:
 deno run --allow-net --allow-env --allow-read --unstable app.js
 
 Other: 
-Add your database credentials in the config.js file.
+(Add your database credentials in the config.js file.)
 Tests can be run how test would regularly be run by using deno test.
+Like this: 
+deno test --allow-net --allow-env --allow-read tests/tests.js
 
 

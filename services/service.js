@@ -1,11 +1,11 @@
 import { executeQuery } from "../database/database.js";
 
-const usersByEmail = async(email) => {
-    return await executeQuery("SELECT * FROM users WHERE email = $1;", email);
+const usersByEmail = async(email, table) => {
+    return await executeQuery(`SELECT * FROM ${table} WHERE email = $1;`, email);
 }
 
-const addUser = async(email, hash) => {
-    await executeQuery("INSERT INTO users (email, password) VALUES ($1, $2);", email, hash);
+const addUser = async(email, hash, table) => {
+    await executeQuery(`INSERT INTO ${table} (email, password) VALUES ($1, $2);`, email, hash);
 }
 
 const addMorning = async(date, sleep_duration, sleep_quality, mood, user_id) => {
@@ -18,9 +18,9 @@ const addEvening = async(date, sport_time, study_time, eating, mood, user_id) =>
     date, sport_time, study_time, eating, mood, user_id);
 }
 
-const getWeekSummary = async(week, year, user_id) => {
-    const morning = await executeQuery("SELECT AVG(sleep_duration) as avgsleep, AVG(mood) as avgmorningmood, AVG(sleep_quality) as avgquality FROM (SELECT *, EXTRACT('year' FROM date) AS yearNumber, EXTRACT('week' FROM date) AS weekNumber FROM morning) as lol WHERE lol.weekNumber = $1 AND user_id = $2 AND lol.yearNumber = $3;", week, user_id, year);
-    const evening = await executeQuery("SELECT AVG(mood) as avgeveningmood, AVG(study_time) as avgstudytime, AVG(sport_time) as avgsporttime FROM (SELECT *, EXTRACT('year' FROM date) AS yearNumber, EXTRACT('week' FROM date) AS weekNumber FROM evening) as lol WHERE lol.weekNumber = $1 AND user_id = $2 AND lol.yearNumber = $3;", week, user_id, year);
+const getWeekSummary = async(week, year, user_id, m_table, e_table) => {
+    const morning = await executeQuery(`SELECT AVG(sleep_duration) as avgsleep, AVG(mood) as avgmorningmood, AVG(sleep_quality) as avgquality FROM (SELECT *, EXTRACT('year' FROM date) AS yearNumber, EXTRACT('week' FROM date) AS weekNumber FROM ${m_table}) as lol WHERE lol.weekNumber = $1 AND user_id = $2 AND lol.yearNumber = $3;`, week, user_id, year);
+    const evening = await executeQuery(`SELECT AVG(mood) as avgeveningmood, AVG(study_time) as avgstudytime, AVG(sport_time) as avgsporttime FROM (SELECT *, EXTRACT('year' FROM date) AS yearNumber, EXTRACT('week' FROM date) AS weekNumber FROM ${e_table}) as lol WHERE lol.weekNumber = $1 AND user_id = $2 AND lol.yearNumber = $3;`, week, user_id, year);
 
     const morningObj = morning.rowsOfObjects()[0];
     const eveningObj = evening.rowsOfObjects()[0];
@@ -36,9 +36,9 @@ const getWeekSummary = async(week, year, user_id) => {
     return data;
 }
 
-const getMonthSummary = async(month, year, user_id) => {
-    const morning = await executeQuery("SELECT AVG(sleep_duration) as avgsleep, AVG(mood) as avgmorningmood, AVG(sleep_quality) as avgquality FROM (SELECT *, EXTRACT('year' FROM date) AS yearNumber, EXTRACT('month' FROM date) AS monthNumber FROM morning) as lol WHERE lol.monthNumber = $1 AND user_id = $2 AND lol.yearNumber = $3;", month, user_id, year);
-    const evening = await executeQuery("SELECT AVG(mood) as avgeveningmood, AVG(study_time) as avgstudytime, AVG(sport_time) as avgsporttime FROM (SELECT *, EXTRACT('year' FROM date) AS yearNumber, EXTRACT('month' FROM date) AS monthNumber FROM evening) as lol WHERE lol.monthNumber = $1 AND user_id = $2 AND lol.yearNumber = $3;", month, user_id, year);
+const getMonthSummary = async(month, year, user_id, m_table, e_table) => {
+    const morning = await executeQuery(`SELECT AVG(sleep_duration) as avgsleep, AVG(mood) as avgmorningmood, AVG(sleep_quality) as avgquality FROM (SELECT *, EXTRACT('year' FROM date) AS yearNumber, EXTRACT('month' FROM date) AS monthNumber FROM ${m_table}) as lol WHERE lol.monthNumber = $1 AND user_id = $2 AND lol.yearNumber = $3;`, month, user_id, year);
+    const evening = await executeQuery(`SELECT AVG(mood) as avgeveningmood, AVG(study_time) as avgstudytime, AVG(sport_time) as avgsporttime FROM (SELECT *, EXTRACT('year' FROM date) AS yearNumber, EXTRACT('month' FROM date) AS monthNumber FROM ${e_table}) as lol WHERE lol.monthNumber = $1 AND user_id = $2 AND lol.yearNumber = $3;`, month, user_id, year);
 
     const morningObj = morning.rowsOfObjects()[0];
     const eveningObj = evening.rowsOfObjects()[0];
@@ -104,12 +104,12 @@ const updateEvening = async(date, sport_time, study_time, eating, mood, user_id)
     sport_time, study_time, eating, mood, date, user_id);
 }
 
-const avgMorningMood = async(date) => {
-    return await executeQuery("SELECT AVG(mood) as morningMood FROM morning WHERE date = $1;", date);
+const avgMorningMood = async(date, table) => {
+    return await executeQuery(`SELECT AVG(mood) as morningMood FROM ${table} WHERE date = $1;`, date);
 }
 
-const avgEveningMood = async(date) => {
-    return await executeQuery("SELECT AVG(mood) as eveningMood FROM evening WHERE date = $1;", date);
+const avgEveningMood = async(date, table) => {
+    return await executeQuery(`SELECT AVG(mood) as eveningMood FROM ${table} WHERE date = $1;`, date);
 }
 
 
