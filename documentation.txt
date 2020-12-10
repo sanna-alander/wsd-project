@@ -78,7 +78,7 @@ CREATE TABLE evening_test (
 );
 
 
-Address where the app can be found: https://wsd-health-app.herokuapp.com/auth/register
+Address where the app can be found: https://wsd-health-app.herokuapp.com/
 
 How to run app locally:
 First start by creating the needed tables into your database.
@@ -89,8 +89,9 @@ Then run by using deno:
 
 Other: 
 Tests can be run how test would regularly be run by using deno test.
+You need to run it with the database credentials here as well.
 Like this: 
-deno test --allow-net --allow-env --allow-read tests/tests.js
+(database credentials here) deno test --allow-net --allow-env --allow-read tests/tests.js
 all tests are located in the tests.js file.
 
 Also about the tests:
