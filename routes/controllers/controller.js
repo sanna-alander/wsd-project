@@ -45,8 +45,7 @@ const showApiSummary = async({response}) => {
     let sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     sevenDaysAgo = sevenDaysAgo.toISOString().substr(0, 10);
-    console.log(sevenDaysAgo);
-    response.body = await weekAvg(data.date, sevenDaysAgo);
+    response.body = await weekAvg(data.date, sevenDaysAgo, "morning", "evening");
 }
 
 

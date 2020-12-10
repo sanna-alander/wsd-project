@@ -1,4 +1,4 @@
-HELLO!
+HELLO! :3
 
 First here you have the tables that are needed both for running the app and running the tests.
 I decided to only create separate tables for tests.
@@ -82,14 +82,19 @@ Address where the app can be found: https://wsd-health-app.herokuapp.com/auth/re
 
 How to run app locally:
 First start by creating the needed tables into your database.
-Give database credentials when running the app.
+Give database credentials when running the app. For example:
+PGPORT=5432 PGDATABASE=database name PGHOST=something.db.elephantsql.com PGUSER=user PGPASSWORD=your password
 Then run by using deno:
-deno run --allow-net --allow-env --allow-read --unstable app.js
+(database credentials here) deno run --allow-net --allow-env --allow-read --unstable app.js
 
 Other: 
-(Add your database credentials in the config.js file.)
 Tests can be run how test would regularly be run by using deno test.
 Like this: 
 deno test --allow-net --allow-env --allow-read tests/tests.js
+all tests are located in the tests.js file.
+
+Also about the tests:
+I would have written better tests but didn't know how to write tests for the functions that use sessions. 
+I did my best at trying to write useful tests for my application.
 
 

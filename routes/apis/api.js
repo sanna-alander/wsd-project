@@ -321,7 +321,7 @@ const reportingStatus = async({session}) => {
 }
 
 
-export { postRegistrationForm, postLoginForm, reportMorning, reportEvening, logout, avgMood, summary, dailyAvg, latestSummary, getEmail, reportingStatus }
+export { postRegistrationForm, postLoginForm, reportMorning, reportEvening, logout, avgMood, summary, dailyAvg, latestSummary, getEmail, reportingStatus, weekNow }
 export { session }
 
 

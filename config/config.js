@@ -1,13 +1,19 @@
 let config = {};
 
+// if you want you can also add your database credentials here
+/*config.database = { 
+    hostname: ,
+    database: ,
+    user: ,
+    password: ,
+    port: 
+};*/
 
-config.database = {
-    hostname: "hattie.db.elephantsql.com",
-    database: "bryfzuts",
-    user: "bryfzuts",
-    password: "ASPk8WwJk2x-bRQFk4_7FExf8-TjJASC",
-    port: 5432
-};
+if (Deno.env.get('DATABASE_URL')) {
+    config.database = Deno.env.get('DATABASE_URL');
+  } else {
+    config.database = {};
+  }
 
 
 export { config };

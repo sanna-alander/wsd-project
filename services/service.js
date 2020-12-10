@@ -54,9 +54,9 @@ const getMonthSummary = async(month, year, user_id, m_table, e_table) => {
     return data;
 }
 
-const weekAvg = async(thisDate, weekAgo) => {
-    const morning = await executeQuery("SELECT AVG(sleep_duration) as avgSleep, AVG(mood) as avgMorningMood, AVG(sleep_quality) as avgQuality FROM morning WHERE date BETWEEN $1 AND $2;", weekAgo, thisDate);
-    const evening = await executeQuery("SELECT AVG(mood) as avgEveningMood, AVG(study_time) as avgStudyTime, AVG(sport_time) as avgSportTime FROM evening WHERE date BETWEEN $1 AND $2;", weekAgo, thisDate);
+const weekAvg = async(thisDate, weekAgo, m_table, e_table) => {
+    const morning = await executeQuery(`SELECT AVG(sleep_duration) as avgSleep, AVG(mood) as avgMorningMood, AVG(sleep_quality) as avgQuality FROM ${m_table} WHERE date BETWEEN $1 AND $2;`, weekAgo, thisDate);
+    const evening = await executeQuery(`SELECT AVG(mood) as avgEveningMood, AVG(study_time) as avgStudyTime, AVG(sport_time) as avgSportTime FROM ${e_table} WHERE date BETWEEN $1 AND $2;`, weekAgo, thisDate);
     const morningObj = morning.rowsOfObjects()[0];
     const eveningObj = evening.rowsOfObjects()[0];
     const avgMood = (Number(morningObj.avgmorningmood) + Number(eveningObj.avgeveningmood))/2;
@@ -105,11 +105,11 @@ const updateEvening = async(date, sport_time, study_time, eating, mood, user_id)
 }
 
 const avgMorningMood = async(date, table) => {
-    return await executeQuery(`SELECT AVG(mood) as morningMood FROM ${table} WHERE date = $1;`, date);
+    return await executeQuery(`SELECT AVG(mood) as morningmood FROM ${table} WHERE date = $1;`, date);
 }
 
 const avgEveningMood = async(date, table) => {
-    return await executeQuery(`SELECT AVG(mood) as eveningMood FROM ${table} WHERE date = $1;`, date);
+    return await executeQuery(`SELECT AVG(mood) as eveningmood FROM ${table} WHERE date = $1;`, date);
 }
 
 
