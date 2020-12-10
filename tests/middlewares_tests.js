@@ -1,5 +1,5 @@
 import { superoak } from "https://deno.land/x/superoak@2.3.1/mod.ts";
-import { errorMiddleware, requestTimingMiddleware, serveStaticFilesMiddleware } from "./middlewares.js";
+import { errorMiddleware, requestTimingMiddleware, serveStaticFilesMiddleware } from "../middlewares/middlewares.js";
 import { app } from "../app.js";
 
 const fun = () => {

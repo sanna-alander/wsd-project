@@ -1,3 +1,7 @@
+HELLO!
+
+My health app 
+
 Tables that need to be created:
 
 CREATE TABLE users (
@@ -27,6 +31,16 @@ CREATE TABLE evening (
 	user_id INTEGER REFERENCES users(id)
 );
 
-Address:
+Address where the app can be found:
 
-Other:
+How to run app locally:
+First start by creating the needed tables into your database.
+Add database credentials.
+Then run by using deno:
+deno run --allow-net --allow-env --allow-read --unstable app.js
+
+Other: 
+Add your database credentials in the config.js file.
+Tests can be run how test would regularly be run by using deno test.
+
+

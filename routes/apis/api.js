@@ -87,10 +87,11 @@ const reportMorning = async({request, response, session, render}) => {
         sleep_duration: params.get('sleep_duration'),
         sleep_quality: Number(params.get('sleep_quality')), 
         mood: Number(params.get('mood')),
-        errors: [] 
+        errors: [],
+        email: await getEmail({session})
     };
 
-    if (isNaN(data.sleep_duration) || Number(data.sleep_duration) < 0) {
+    if (!data.sleep_duration || isNaN(data.sleep_duration) || Number(data.sleep_duration) < 0) {
         data.errors.push("Enter a valid number for sleep duration!")
     }
 
@@ -118,14 +119,15 @@ const reportEvening = async({request, response, session, render}) => {
         sport_time: params.get('sport_time'),
         eating: Number(params.get('eating')),
         mood: Number(params.get('mood')),
-        errors: [] 
+        errors: [], 
+        email: await getEmail({session})
     };
 
-    if (isNaN(data.study_time) || Number(data.study_time) < 0) {
+    if (!data.study_time || isNaN(data.study_time) || Number(data.study_time) < 0) {
         data.errors.push("Enter a valid number for study time!")
     }
 
-    if (isNaN(data.sport_time) || Number(data.sport_time) < 0) {
+    if (!data.sport_time || isNaN(data.sport_time) || Number(data.sport_time) < 0) {
         data.errors.push("Enter a valid number for sport time!")
     }
 
@@ -149,6 +151,53 @@ const logout = async({response, session}) => {
     response.redirect('/');
 }
 
+const latestSummary = async({session, render}) => {
+    const data = {
+        sleep_duration: "",
+        sport_time: "",
+        study_time: "",
+        sleep_quality: "",
+        mood: "",
+        no_data_error: "",
+        sleep_duration_m: "",
+        sport_time_m: "",
+        study_time_m: "",
+        sleep_quality_m: "",
+        mood_m: "",
+        no_data_error_m: "",
+        email: await getEmail({session})
+    };
+
+    const user_id = (await session.get('user')).id;
+    const today = new Date().toISOString().substr(0, 10);
+    const year = new Date().toISOString().substr(0, 4);
+    const week = Number(weekNow()) - 1;
+    if (week === 0) {
+        week = 52;
+        year = Number(year) - 1;
+    } 
+    console.log(week);
+    const month = Number(today.substr(5,2)) - 1;
+    const weekSummary = await service.getWeekSummary(week, year, user_id);
+    const monthSummary = await service.getMonthSummary(month, year, user_id);
+
+    data.sleep_duration_m = monthSummary.sleep_duration;
+    data.sleep_quality_m = monthSummary.sleep_quality;
+    data.sport_time_m = monthSummary.sport_time;
+    data.study_time_m = monthSummary.study_time;
+    data.mood_m = monthSummary.mood;
+    
+   
+    data.sleep_duration = weekSummary.sleep_duration;
+    data.sleep_quality = weekSummary.sleep_quality;
+    data.sport_time = weekSummary.sport_time;
+    data.study_time = weekSummary.study_time;
+    data.mood = weekSummary.mood;
+
+    render("summary.ejs", data);
+
+}
+
 const summary = async({request, session, render}) => {
     const data = {
         sleep_duration: "",
@@ -156,37 +205,51 @@ const summary = async({request, session, render}) => {
         study_time: "",
         sleep_quality: "",
         mood: "",
+        no_data_error: "",
         sleep_duration_m: "",
         sport_time_m: "",
         study_time_m: "",
         sleep_quality_m: "",
-        mood_m: ""
+        mood_m: "",
+        no_data_error_m: "",
+        email: await getEmail({session})
     };
     const body = request.body();
     const params = await body.value;
 
     const user_id = (await session.get('user')).id;
-
-    const week = Number(params.get('week').substr(6,7));
+    
+    const week = Number(params.get('week').substr(6,2));
+    const month = Number(params.get('month').substr(5,2));
     console.log(week);
-    const month = Number(params.get('month').substr(6,7));
     console.log(month);
-    const weekSummary = await service.getWeekSummary(week, user_id);
-    const monthSummary = await service.getMonthSummary(month, user_id);
+    let year_w = 2020;
+    let year_m = 2020;
+    if (week != 0) year_w = params.get('week').substr(0,4);
+    if (month != 0) year_m = params.get('month').substr(0,4);
+    const weekSummary = await service.getWeekSummary(week, year_w, user_id);
+    const monthSummary = await service.getMonthSummary(month, year_m, user_id);
 
-    if (monthSummary != 0) {
-        data.sleep_duration_m = monthSummary.sleep_duration;
-        data.sleep_quality_m = monthSummary.sleep_quality;
-        data.sport_time_m = monthSummary.sport_time;
-        data.study_time_m = monthSummary.study_time;
-        data.mood_m = monthSummary.mood;
+    data.sleep_duration_m = monthSummary.sleep_duration;
+    data.sleep_quality_m = monthSummary.sleep_quality;
+    data.sport_time_m = monthSummary.sport_time;
+    data.study_time_m = monthSummary.study_time;
+    data.mood_m = monthSummary.mood;
+    if (month === 0) {
+        data.no_data_error_m = "Choose a month to see a monthly summary!"
+    } else if (data.mood_m === 0) {
+        data.no_data_error_m = "No data for the given month."
     }
-    if (weekSummary != 0) {
-        data.sleep_duration = weekSummary.sleep_duration;
-        data.sleep_quality = weekSummary.sleep_quality;
-        data.sport_time = weekSummary.sport_time;
-        data.study_time = weekSummary.study_time;
-        data.mood = weekSummary.mood;
+    
+    data.sleep_duration = weekSummary.sleep_duration;
+    data.sleep_quality = weekSummary.sleep_quality;
+    data.sport_time = weekSummary.sport_time;
+    data.study_time = weekSummary.study_time;
+    data.mood = weekSummary.mood;
+    if (week === 0) {
+        data.no_data_error = "Choose a week to see a weekly summary!"
+    } else if (data.mood === 0) {
+        data.no_data_error = "No data for the given week."
     }
 
     render("summary.ejs", data);
@@ -196,24 +259,91 @@ const summary = async({request, session, render}) => {
 const avgMood = async({session}) => {
     const data = {
         moodToday: "",
-        moodYesterday: ""
+        moodYesterday: "",
+        email: await getEmail({session})
     };
 
-    if (await session.get('authenticated')) {
-        const user_id = (await session.get('user')).id;
-        const today = new Date().toISOString().substr(0, 10);
-        let yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const moodToday = await service.avgMood(today, user_id);
-        const moodYesterday = await service.avgMood(yesterday, user_id);
-        if (!isNaN(moodToday) && !isNaN(moodYesterday)) {
-            data.moodToday = moodToday;
-            data.moodYesterday = moodYesterday;
-        }
+    const today = new Date().toISOString().substr(0, 10);
+    let yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday = yesterday.toISOString().substr(0, 10);
+
+    const todayMorningMood = await service.avgMorningMood(today);
+    const todayEveningMood = await service.avgEveningMood(today);
+    if (todayMorningMood.rowCount !== 0 && todayEveningMood.rowCount !== 0) {
+        const morningObjT = todayMorningMood.rowsOfObjects()[0];
+        const eveningObjT = todayEveningMood.rowsOfObjects()[0];
+        const avgMoodToday = (Number(morningObjT.morningmood) + Number(eveningObjT.eveningmood))/2;
+        if(avgMoodToday != 0) data.moodToday = avgMoodToday;
     }
+    const yesMorningMood = await service.avgMorningMood(yesterday);
+    const yesEveningMood = await service.avgEveningMood(yesterday);
+    if (todayMorningMood.rowCount !== 0 && todayEveningMood.rowCount !== 0) {
+        const morningObjY = yesMorningMood.rowsOfObjects()[0];
+        const eveningObjY = yesEveningMood.rowsOfObjects()[0];
+        const avgMoodYes = (Number(morningObjY.morningmood) + Number(eveningObjY.eveningmood))/2;
+        if(avgMoodYes != 0) data.moodYesterday = avgMoodYes;
+    }
+
 
     return data;
 }
 
-export { postRegistrationForm, postLoginForm, reportMorning, reportEvening, logout, avgMood, summary }
+const dailyAvg = async({response, params}) => {
+    const month = Number(params.month) - 1;
+    const day = Number(params.day) + 1;
+    const date = new Date(params.year, month, day).toISOString().substr(0, 10);
+    response.body = await service.getDailyAvg(date);
+}
+
+const weekNow = () => {
+    let now = new Date();
+    let onejan = new Date(now.getFullYear(), 0, 1);
+    let week = Math.ceil( (((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7 );
+    return week;
+}
+
+const getEmail = async({session}) => {
+    if (await session.get('authenticated')) {
+        return (await session.get('user')).email;
+    }
+    return "";
+}
+
+const reportingStatus = async({session}) => {
+    const date = new Date().toISOString().substr(0, 10)
+    const user_id = (await session.get('user')).id;
+    const resMorning = await service.getMorningReport(date, user_id);
+    const resEvening = await service.getEveningReport(date, user_id);
+    if (resMorning.rowCount > 0 && resEvening.rowCount > 0) {
+        return "You have already done morning and evening reporting for today";
+    } else if (resMorning.rowCount > 0) {
+        return "You have already done morning reporting for today";
+    }
+    return "You have already done evening reporting for today";
+
+}
+
+
+export { postRegistrationForm, postLoginForm, reportMorning, reportEvening, logout, avgMood, summary, dailyAvg, latestSummary, getEmail, reportingStatus }
 export { session }
+
+/*if (!Deno.env.get('TEST_ENVIRONMENT')) {
+    app.listen({ port: 7777 });
+}*/
+
+/*function CurrencyFormatted(amount) {
+	var i = parseFloat(amount);
+	if(isNaN(i)) { i = 0.00; }
+	var minus = '';
+	if(i < 0) { minus = '-'; }
+	i = Math.abs(i);
+	i = parseInt((i + .005) * 100);
+	i = i / 100;
+	s = new String(i);
+	if(s.indexOf('.') < 0) { s += '.00'; }
+	if(s.indexOf('.') == (s.length - 2)) { s += '0'; }
+	s = minus + s;
+	return s;
+}*/
+

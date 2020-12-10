@@ -1,9 +1,16 @@
 <%- include('./partials/header.ejs') %>
+<%- include('./partials/email.ejs') %>
 <%- include('./partials/logout.ejs') %>
 <div class="container">
     <h1>Reporting</h1>
-    <a href="/behavior/reporting/morning">Report morning</a><br>
-    <a href="/behavior/reporting/evening">Report evening</a><br>
+    <form action="reporting/morning">
+        <input type="submit" value="Report morning" />
+    </form>
+    <form action="reporting/evening">
+        <input type="submit" value="Report evening" />
+    </form>
+    <br>
+    <h5><%= status %></h5>
 </div>
 <%- include('./partials/footer.ejs') %>
 

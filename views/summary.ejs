@@ -1,22 +1,29 @@
 <%- include('./partials/header.ejs') %>
+<%- include('./partials/email.ejs') %>
 <%- include('./partials/logout.ejs') %>
 <div class="container">
     <h2>Weekly summary (by default last week):</h2>
     <div>
-        <p>Average sleep duration: <%= sleep_duration %> </p><br>
-        <p>Average sleep quality: <%= sleep_quality %> </p><br>
-        <p>Average sport time: <%= sport_time %> </p><br>
-        <p>Average study time: <%= study_time %> </p><br>
-        <p>Average general mood: <%= mood %></p><br>
+        <p><%= no_data_error %></p>
+        <% if (no_data_error === "") { %>
+            <p>Average sleep duration: <%= sleep_duration %> </p><br>
+            <p>Average sleep quality: <%= sleep_quality %> </p><br>
+            <p>Average sport time: <%= sport_time %> </p><br>
+            <p>Average study time: <%= study_time %> </p><br>
+            <p>Average general mood: <%= mood %></p><br>
+        <% } %>
     </div>
 
     <h2>Monthly summary (by default last month):</h2>
     <div>
-        <p>Average sleep duration: <%= sleep_duration_m %> </p><br>
-        <p>Average sleep quality: <%= sleep_quality_m %> </p><br>
-        <p>Average sport time: <%= sport_time_m %> </p><br>
-        <p>Average study time: <%= study_time_m %> </p><br>
-        <p>Average general mood: <%= mood_m %></p><br>
+        <p><%= no_data_error_m %></p>
+        <% if (no_data_error_m === "") { %>
+            <p>Average sleep duration: <%= sleep_duration_m %> </p><br>
+            <p>Average sleep quality: <%= sleep_quality_m %> </p><br>
+            <p>Average sport time: <%= sport_time_m %> </p><br>
+            <p>Average study time: <%= study_time_m %> </p><br>
+            <p>Average general mood: <%= mood_m %></p><br>
+        <% } %>
     </div>
 
     <form method="POST" action="/behavior/summary">     

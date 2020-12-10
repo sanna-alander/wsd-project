@@ -1,4 +1,5 @@
 <%- include('./partials/header.ejs') %>
+<%- include('./partials/email.ejs') %>
 <%- include('./partials/logout.ejs') %>
 <div class="container">
     <h1>Report morning:</h1>
@@ -23,7 +24,7 @@
         </div>
         <input type="submit" value="Report morning" />  
     </form>
+    <%- include('./partials/error.ejs') %>
 </div>
-<%- include('./partials/error.ejs') %>
 <a href="/behavior/reporting">Back to reporting</a><br>
 <%- include('./partials/footer.ejs') %>

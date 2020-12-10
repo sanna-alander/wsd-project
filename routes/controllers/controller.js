@@ -1,6 +1,5 @@
-//import { getSummary } from "../../services/service.js";
+import { weekAvg } from "../../services/service.js";
 import  *  as api from "../apis/api.js";
-//import { session } from "../apis/api.js";
 
 const data = {
     errors: [],
@@ -12,19 +11,6 @@ const data = {
     mood: "1",
     eating: "1",
     date: new Date().toISOString().substr(0, 10)
-};
-
-const summary_data = {
-    sleep_duration: "",
-    sport_time: "",
-    study_time: "",
-    sleep_quality: "",
-    mood: "",
-    sleep_duration_m: "",
-    sport_time_m: "",
-    study_time_m: "",
-    sleep_quality_m: "",
-    mood_m: ""
 };
 
 const showLoginForm = ({render}) => {
@@ -39,21 +25,28 @@ const showLandingPage = async({render, session}) => {
     render('landingPage.ejs', await api.avgMood({session}));
 }
 
-const showReporting = ({render}) => {
-    render('reporting.ejs', data);
+const showReporting = async({render, session}) => {
+    data.email = await api.getEmail({session});
+    render('reporting.ejs', { email: data.email, status: await api.reportingStatus({session}) });
 }
 
-const showMorning = ({render}) => {
+const showMorning = async({render, session}) => {
+    data.email = await api.getEmail({session});
     render('morning.ejs', data);
 }
 
-const showEvening = ({render}) => {
+const showEvening = async({render, session}) => {
+    data.email = await api.getEmail({session});
     render('evening.ejs', data);
 }
 
-const showSummary = async({render}) => {
-    render('summary.ejs', summary_data);
+const showApiSummary = async({response}) => {
+    let sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    sevenDaysAgo = sevenDaysAgo.toISOString().substr(0, 10);
+    console.log(sevenDaysAgo);
+    response.body = await weekAvg(data.date, sevenDaysAgo);
 }
 
 
-export { showLoginForm, showRegistrationForm, showLandingPage, showReporting, showMorning, showEvening, showSummary }
+export { showLoginForm, showRegistrationForm, showLandingPage, showReporting, showMorning, showEvening, showApiSummary }

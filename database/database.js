@@ -1,17 +1,15 @@
 import { Pool } from "../deps.js";
 import { config } from "../config/config.js";
 
-const CONCURRENT_CONNECTIONS = 5;
-const connectionPool = new Pool({ 
-    hostname: config.hostname,
-    database: config.database,
-    user: config.user,
-    password: config.password,
-    port: config.port
- }, CONCURRENT_CONNECTIONS);
+const CONCURRENT_CONNECTIONS = 2;
+const connectionPool = () => new Pool(
+    config.database
+ , CONCURRENT_CONNECTIONS);
+
+ const pool = connectionPool();
 
 const executeQuery = async(query, ...args) => {
-  const client = await connectionPool.connect();
+  const client = await pool.connect();
   try {
     return await client.query(query, ...args);
   } catch (e) {

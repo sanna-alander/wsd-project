@@ -1,4 +1,5 @@
 <%- include('./partials/header.ejs') %>
+<a href="/">Back to main page</a><br>
 <div class="container">
     <h1>Login:</h1>
     <form method="POST" action="/auth/login">
@@ -8,7 +9,7 @@
         <input type="password" name="password" />
         <input type="submit" value="Login" />
     </form>
+    <%- include('./partials/error.ejs') %>
 </div>
-<%- include('./partials/error.ejs') %>
 <p>Don't have an account yet? Register <a href="/auth/register">here!</a></p>
 <%- include('./partials/footer.ejs') %>

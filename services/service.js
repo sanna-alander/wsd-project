@@ -18,40 +18,70 @@ const addEvening = async(date, sport_time, study_time, eating, mood, user_id) =>
     date, sport_time, study_time, eating, mood, user_id);
 }
 
-const getWeekSummary = async(week, user_id) => {
-    const morning = await executeQuery("SELECT AVG(sleep_duration) as avgSleep, AVG(mood) as avgMorningMood, AVG(sleep_quality) as avgQuality FROM (SELECT *, EXTRACT('week' FROM date) AS weekNumber FROM morning) as foo WHERE foo.weekNumber = $1 AND user_id = $2;", week, user_id);
-    const evening = await executeQuery("SELECT AVG(mood) as avgEveningMood,AVG(study_time) as avgStudyTime, AVG(sport_time) as avgSportTime FROM (SELECT *, EXTRACT('week' FROM date) AS weekNumber FROM evening) as foo WHERE foo.weekNumber = $1 AND user_id = $2;", week, user_id);
-    if (morning.rowCount === 0 || morning.rowCount === 0) {
-        return 0;
-    }
+const getWeekSummary = async(week, year, user_id) => {
+    const morning = await executeQuery("SELECT AVG(sleep_duration) as avgsleep, AVG(mood) as avgmorningmood, AVG(sleep_quality) as avgquality FROM (SELECT *, EXTRACT('year' FROM date) AS yearNumber, EXTRACT('week' FROM date) AS weekNumber FROM morning) as lol WHERE lol.weekNumber = $1 AND user_id = $2 AND lol.yearNumber = $3;", week, user_id, year);
+    const evening = await executeQuery("SELECT AVG(mood) as avgeveningmood, AVG(study_time) as avgstudytime, AVG(sport_time) as avgsporttime FROM (SELECT *, EXTRACT('year' FROM date) AS yearNumber, EXTRACT('week' FROM date) AS weekNumber FROM evening) as lol WHERE lol.weekNumber = $1 AND user_id = $2 AND lol.yearNumber = $3;", week, user_id, year);
+
     const morningObj = morning.rowsOfObjects()[0];
     const eveningObj = evening.rowsOfObjects()[0];
-    const avgMood = (Number(morningObj.avgMorningMood) + Number(eveningObj.avgEveningMood))/2;
+    
+    const avgMood = (Number(morningObj.avgmorningmood) + Number(eveningObj.avgeveningmood))/2;
     const data = {
-      sleep_duration: Number(morningObj.avgSleep),
-      sport_time: Number(eveningObj.avgSportTime),
-      study_time: Number(eveningObj.avgStudyTime),
-      sleep_quality: Number(morningObj.avgQuality),
+      sleep_duration: Number(morningObj.avgsleep),
+      sport_time: Number(eveningObj.avgsporttime),
+      study_time: Number(eveningObj.avgstudytime),
+      sleep_quality: Number(morningObj.avgquality),
       mood: avgMood
     };
     return data;
 }
 
-const getMonthSummary = async(month, user_id) => {
-    const morning = await executeQuery("SELECT AVG(sleep_duration) as avgSleep, AVG(mood) as avgMorningMood, AVG(sleep_quality) as avgQuality FROM (SELECT *, EXTRACT('month' FROM date) AS monthNumber FROM morning) as foo WHERE foo.monthNumber = $1 AND user_id = $2;", month, user_id);
-    const evening = await executeQuery("SELECT AVG(mood) as avgEveningMood,AVG(study_time) as avgStudyTime, AVG(sport_time) as avgSportTime FROM (SELECT *, EXTRACT('month' FROM date) AS monthNumber FROM evening) as foo WHERE foo.monthNumber = $1 AND user_id = $2;", month, user_id);
-    if (morning.rowCount === 0 || morning.rowCount === 0) {
-        return 0;
-    }
+const getMonthSummary = async(month, year, user_id) => {
+    const morning = await executeQuery("SELECT AVG(sleep_duration) as avgsleep, AVG(mood) as avgmorningmood, AVG(sleep_quality) as avgquality FROM (SELECT *, EXTRACT('year' FROM date) AS yearNumber, EXTRACT('month' FROM date) AS monthNumber FROM morning) as lol WHERE lol.monthNumber = $1 AND user_id = $2 AND lol.yearNumber = $3;", month, user_id, year);
+    const evening = await executeQuery("SELECT AVG(mood) as avgeveningmood, AVG(study_time) as avgstudytime, AVG(sport_time) as avgsporttime FROM (SELECT *, EXTRACT('year' FROM date) AS yearNumber, EXTRACT('month' FROM date) AS monthNumber FROM evening) as lol WHERE lol.monthNumber = $1 AND user_id = $2 AND lol.yearNumber = $3;", month, user_id, year);
+
     const morningObj = morning.rowsOfObjects()[0];
     const eveningObj = evening.rowsOfObjects()[0];
-    const avgMood = (Number(morningObj.avgMorningMood) + Number(eveningObj.avgEveningMood))/2;
+
+    const avgMood = (Number(morningObj.avgmorningmood) + Number(eveningObj.avgeveningmood))/2;
     const data = {
-      sleep_duration: Number(morningObj.avgSleep),
-      sport_time: Number(eveningObj.avgSportTime),
-      study_time: Number(eveningObj.avgStudyTime),
-      sleep_quality: Number(morningObj.avgQuality),
+      sleep_duration: Number(morningObj.avgsleep),
+      sport_time: Number(eveningObj.avgsporttime),
+      study_time: Number(eveningObj.avgstudytime),
+      sleep_quality: Number(morningObj.avgquality),
       mood: avgMood
+    };
+    return data;
+}
+
+const weekAvg = async(thisDate, weekAgo) => {
+    const morning = await executeQuery("SELECT AVG(sleep_duration) as avgSleep, AVG(mood) as avgMorningMood, AVG(sleep_quality) as avgQuality FROM morning WHERE date BETWEEN $1 AND $2;", weekAgo, thisDate);
+    const evening = await executeQuery("SELECT AVG(mood) as avgEveningMood, AVG(study_time) as avgStudyTime, AVG(sport_time) as avgSportTime FROM evening WHERE date BETWEEN $1 AND $2;", weekAgo, thisDate);
+    const morningObj = morning.rowsOfObjects()[0];
+    const eveningObj = evening.rowsOfObjects()[0];
+    const avgMood = (Number(morningObj.avgmorningmood) + Number(eveningObj.avgeveningmood))/2;
+    const data = {
+        avg_sleep_duration: Number(morningObj.avgsleep),
+        avg_sport_time: Number(eveningObj.avgsporttime),
+        avg_study_time: Number(eveningObj.avgstudytime),
+        avg_sleep_quality: Number(morningObj.avgquality),
+        avg_mood: avgMood
+    };
+    return data;
+}
+
+const getDailyAvg = async(date) => {
+    const morning = await executeQuery("SELECT AVG(sleep_duration) as avgSleep, AVG(mood) as avgMorningMood, AVG(sleep_quality) as avgQuality FROM morning WHERE date = $1;", date);
+    const evening = await executeQuery("SELECT AVG(mood) as avgEveningMood, AVG(study_time) as avgStudyTime, AVG(sport_time) as avgSportTime FROM evening WHERE date = $1;", date);
+    const morningObj = morning.rowsOfObjects()[0];
+    const eveningObj = evening.rowsOfObjects()[0];
+    const avgMood = (Number(morningObj.avgmorningmood) + Number(eveningObj.avgeveningmood))/2;
+    const data = {
+      avg_sleep_duration: Number(morningObj.avgsleep),
+      avg_sport_time: Number(eveningObj.avgsporttime),
+      avg_study_time: Number(eveningObj.avgstudytime),
+      avg_sleep_quality: Number(morningObj.avgquality),
+      avg_mood: avgMood
     };
     return data;
 }
@@ -74,15 +104,14 @@ const updateEvening = async(date, sport_time, study_time, eating, mood, user_id)
     sport_time, study_time, eating, mood, date, user_id);
 }
 
-const avgMood = async(date, user_id) => {
-    const morning = await executeQuery("SELECT AVG(mood) as avgMorningMood FROM morning WHERE date = $1 AND user_id = $2;", date, user_id);
-    const evening = await executeQuery("SELECT AVG(mood) as avgEveningMood FROM evening WHERE date = $1 AND user_id = $2;", date, user_id);
-    const morningObj = morning.rowsOfObjects()[0];
-    const eveningObj = evening.rowsOfObjects()[0];
-    const avgMood = (Number(morningObj.avgMorningMood) + Number(eveningObj.avgEveningMood))/2;
-    console.log(avgMood);
-    return avgMood;
+const avgMorningMood = async(date) => {
+    return await executeQuery("SELECT AVG(mood) as morningMood FROM morning WHERE date = $1;", date);
+}
+
+const avgEveningMood = async(date) => {
+    return await executeQuery("SELECT AVG(mood) as eveningMood FROM evening WHERE date = $1;", date);
 }
 
 
-export { usersByEmail, addUser, addMorning, addEvening, getMorningReport, getEveningReport, updateMorning, updateEvening, getWeekSummary, getMonthSummary, avgMood }
+export { usersByEmail, addUser, addMorning, addEvening, getMorningReport, getEveningReport, updateMorning, 
+    updateEvening, getWeekSummary, getMonthSummary, weekAvg, getDailyAvg, avgEveningMood, avgMorningMood }

@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.78.0/testing/asserts.ts";
-import {  } from './service.js';
+import {  } from '../services/service.js';
 
 Deno.test("Function getHello returns empty string when nothing has been set", () => {
     assertEquals(getHello(), '');
