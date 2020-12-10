@@ -18,6 +18,7 @@ const showLoginForm = ({render}) => {
 }
 
 const showRegistrationForm = ({render}) => {
+    data.email = "";
     render('register.ejs', data);
   }
 

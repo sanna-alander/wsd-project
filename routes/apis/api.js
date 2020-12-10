@@ -73,7 +73,7 @@ const postRegistrationForm = async({request, response, render}) => {
     } else {
         const hash = await bcrypt.hash(data.password);
         service.addUser(data.email, hash, "users");
-        response.redirect('/');
+        response.redirect('/auth/login');
     }
 
 };
@@ -91,7 +91,7 @@ const reportMorning = async({request, response, session, render}) => {
         email: await getEmail({session})
     };
 
-    if (!data.sleep_duration || isNaN(data.sleep_duration) || Number(data.sleep_duration) < 0) {
+    if (!data.sleep_duration || isNaN(data.sleep_duration) || Number(data.sleep_duration) < 0 || Number(data.sleep_duration) > 24) {
         data.errors.push("Enter a valid number for sleep duration!")
     }
 
@@ -123,11 +123,11 @@ const reportEvening = async({request, response, session, render}) => {
         email: await getEmail({session})
     };
 
-    if (!data.study_time || isNaN(data.study_time) || Number(data.study_time) < 0) {
+    if (!data.study_time || isNaN(data.study_time) || Number(data.study_time) < 0 || Number(data.study_time) > 24) {
         data.errors.push("Enter a valid number for study time!")
     }
 
-    if (!data.sport_time || isNaN(data.sport_time) || Number(data.sport_time) < 0) {
+    if (!data.sport_time || isNaN(data.sport_time) || Number(data.sport_time) < 0 || Number(data.study_time) > 24) {
         data.errors.push("Enter a valid number for sport time!")
     }
 
@@ -324,22 +324,4 @@ const reportingStatus = async({session}) => {
 export { postRegistrationForm, postLoginForm, reportMorning, reportEvening, logout, avgMood, summary, dailyAvg, latestSummary, getEmail, reportingStatus }
 export { session }
 
-/*if (!Deno.env.get('TEST_ENVIRONMENT')) {
-    app.listen({ port: 7777 });
-}*/
-
-/*function CurrencyFormatted(amount) {
-	var i = parseFloat(amount);
-	if(isNaN(i)) { i = 0.00; }
-	var minus = '';
-	if(i < 0) { minus = '-'; }
-	i = Math.abs(i);
-	i = parseInt((i + .005) * 100);
-	i = i / 100;
-	s = new String(i);
-	if(s.indexOf('.') < 0) { s += '.00'; }
-	if(s.indexOf('.') == (s.length - 2)) { s += '0'; }
-	s = minus + s;
-	return s;
-}*/
 
