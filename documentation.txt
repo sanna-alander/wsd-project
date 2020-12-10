@@ -1,6 +1,7 @@
 HELLO!
 
 First here you have the tables that are needed both for running the app and running the tests.
+I decided to only create separate tables for tests.
 Below these you can find more guidelines on running the app and tests locally.
 Also the address at which the application can currently be accessed can be found there.
 
@@ -77,7 +78,7 @@ CREATE TABLE evening_test (
 );
 
 
-Address where the app can be found:
+Address where the app can be found: https://wsd-health-app.herokuapp.com/auth/register
 
 How to run app locally:
 First start by creating the needed tables into your database.

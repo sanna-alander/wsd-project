@@ -71,8 +71,8 @@ const postRegistrationForm = async({request, response, render}) => {
     if (data.errors.length > 0) {
         render("register.ejs", data);
     } else {
-        const hash = await bcrypt.hash(password);
-        service.addUser(email, hash, "users");
+        const hash = await bcrypt.hash(data.password);
+        service.addUser(data.email, hash, "users");
         response.redirect('/');
     }
 

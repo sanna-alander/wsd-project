@@ -2,8 +2,8 @@ import { Pool } from "../deps.js";
 import { config } from "../config/config.js";
 import { Client } from "https://deno.land/x/postgres@v0.4.5/mod.ts";
 
-const DATABASE_URL = Deno.env.toObject().DATABASE_URL;
-const client = new Client(DATABASE_URL);
+const DATABASE_URL = Deno.env.toObject().DATABASE_URL;  // To run the app locally 
+const client = new Client(DATABASE_URL);                // comment out these two lines
 
 const CONCURRENT_CONNECTIONS = 2;
 const connectionPool = () => new Pool(
@@ -12,6 +12,7 @@ const connectionPool = () => new Pool(
 
 const pool = connectionPool();
 
+// also comment this
 const executeQuery = async(query, ...args) => {
   try {
       await client.connect();
@@ -23,7 +24,8 @@ const executeQuery = async(query, ...args) => {
   }
 }
 
-/*const executeQuery = async(query, ...args) => {
+// also uncomment this
+/*const executeQuery = async(query, ...args) => { 
   const client = await pool.connect();
   try {
     return await client.query(query, ...args);
