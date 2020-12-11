@@ -315,8 +315,12 @@ const reportingStatus = async({session}) => {
         return "You have already done morning and evening reporting for today";
     } else if (resMorning.rowCount > 0) {
         return "You have already done morning reporting for today";
+    } else if (resEvening.rowCount > 0) {
+        return "You have already done evening reporting for today";
+    } else {
+        return "";
     }
-    return "You have already done evening reporting for today";
+    
 
 }
 
