@@ -287,7 +287,7 @@ const avgMood = async({session}) => {
 
 const dailyAvg = async({response, params}) => {
     const month = Number(params.month) - 1;
-    const day = Number(params.day); // + 1;
+    const day = Number(params.day) + 1; // +1 needed locally but not in heroku(?)
     const date = new Date(params.year, month, day).toISOString().substr(0, 10);
     response.body = await service.getDailyAvg(date);
 }
